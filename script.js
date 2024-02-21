@@ -1,4 +1,5 @@
 let books = [];
+let currentEditSubmitHandler = null;
 
 class Book {
   constructor(title, author, pages, read) {
@@ -42,6 +43,17 @@ class Book {
 
     return bookElement;
   }
+}
+
+// Utility
+function safeAddEventListener(selector, eventType, handler) {
+  const element = document.querySelector(selector);
+  if (!element) return;
+
+  // Remove the event listener if it was previously added
+  element.removeEventListener(eventType, handler);
+  // Add the event listener
+  element.addEventListener(eventType, handler);
 }
 
 function closeModal(modal) {
@@ -96,8 +108,10 @@ function displayEditModal(bookElement) {
       closeModal(modal);
     }
   };
-  let closeButton = document.querySelector("#editBookModal .close-button");
-  closeButton.addEventListener("click", () => closeModal(modal));
+
+  safeAddEventListener("#editBookModal .close-button", "click", () =>
+    closeModal(modal)
+  );
 
   let book = undefined;
   for (index in books) {
@@ -118,26 +132,47 @@ function displayEditModal(bookElement) {
   document.querySelector("#editBookModal #editPages").value = book.pages;
   document.querySelector("#editBookModal #editRead").value = book.read;
 
-  let editButton = document.querySelector("#editBookModal input.submit-button");
-  editButton.addEventListener("click", (e) => {
+  const editButton = document.querySelector(
+    "#editBookModal input.submit-button"
+  );
+  if (currentEditSubmitHandler) {
+    editButton.removeEventListener("click", currentEditSubmitHandler);
+  }
+
+  currentEditSubmitHandler = (e) => {
     e.preventDefault();
-    if (!title || !author || !pages || !read) {
+
+    let title = document.querySelector("#editBookModal #editTitle").value;
+    let author = document.querySelector("#editBookModal #editAuthor").value;
+    let pages = document.querySelector("#editBookModal #editPages").value;
+    let read = document.querySelector("#editBookModal #editRead").value;
+
+    if (
+      !(
+        title &&
+        author &&
+        pages &&
+        read &&
+        parseInt(pages) >= 0 &&
+        parseInt(read) >= 0
+      )
+    ) {
+      alert("Invalid Form!");
       return;
     }
-    book.title = document.querySelector("#editBookModal #editTitle").value;
-    book.author = document.querySelector("#editBookModal #editAuthor").value;
-    book.pages = document.querySelector("#editBookModal #editPages").value;
-    book.read = document.querySelector("#editBookModal #editRead").value;
+
+    book.title = title;
+    book.author = author;
+    book.pages = pages;
+    book.read = read;
     saveBooks();
     displayBooks();
     closeModal(modal);
-  });
+  };
 
-  let deleteButton = document.querySelector(
-    "#editBookModal button.submit-button"
-  );
+  editButton.addEventListener("click", currentEditSubmitHandler);
 
-  deleteButton.addEventListener("click", (e) => {
+  safeAddEventListener("#editBookModal button.submit-button", "click", (e) => {
     e.preventDefault();
     let uuid = book.id;
 
@@ -180,12 +215,14 @@ let modal = document.querySelector("#addBookModal");
 /*
 Setup the book submission form
 */
-addButton.addEventListener("click", () => {
+safeAddEventListener("#book-add", "click", () => {
   modal.style["display"] = "block";
   requestAnimationFrame(() => {
     modal.style.opacity = 1; // Fade in
   });
-  closeButton.addEventListener("click", () => closeModal(modal));
+  safeAddEventListener("#addBookModal .close-button", "click", () =>
+    closeModal(modal)
+  );
 
   // When the user clicks anywhere outside of the modal, close it
   window.onclick = function (event) {
@@ -195,8 +232,8 @@ addButton.addEventListener("click", () => {
   };
 });
 
-submitButton.addEventListener("click", (e) => {
-  // e.preventDefault();
+safeAddEventListener("#addBookModal .submit-button", "click", (e) => {
+  e.preventDefault();
 
   let title = document.querySelector(".modal #title").value;
   let author = document.querySelector(".modal #author").value;
@@ -204,6 +241,7 @@ submitButton.addEventListener("click", (e) => {
   let read = document.querySelector(".modal #read").value;
 
   if (!title || !author || !pages || !read) {
+    alert("Invalid form");
     return;
   }
 
@@ -212,3 +250,5 @@ submitButton.addEventListener("click", (e) => {
   displayBooks();
   closeModal(modal);
 });
+
+// Setup edit modal
