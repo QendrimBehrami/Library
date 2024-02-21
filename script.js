@@ -49,7 +49,7 @@ function closeModal(modal) {
   document.querySelector(".modal #title").value = "";
   document.querySelector(".modal #author").value = "";
   document.querySelector(".modal #pages").value = "";
-  document.querySelector(".modal #read").checked = false;
+  document.querySelector(".modal #read").value = "";
   modal.style.opacity = 0; // Fade out
   setTimeout(() => {
     modal.style.display = "none";
@@ -64,12 +64,9 @@ function displayBooks() {
   oldBooks.forEach((book) => book.remove());
 
   books.forEach((newBook) => {
-    // let existingBook = document.querySelector(`#book-${newBook.id}`);
-    // if (!existingBook) {
     let bookElement = newBook.createElement();
     mainElement.insertBefore(bookElement, addButton);
     updateProgress(bookElement);
-    // }
   });
 }
 
@@ -121,7 +118,7 @@ function displayEditModal(bookElement) {
   document.querySelector("#editBookModal #editPages").value = book.pages;
   document.querySelector("#editBookModal #editRead").value = book.read;
 
-  let editButton = document.querySelector("#editBookModal .submit-button");
+  let editButton = document.querySelector("#editBookModal input.submit-button");
   editButton.addEventListener("click", (e) => {
     e.preventDefault();
     if (!title || !author || !pages || !read) {
@@ -131,22 +128,45 @@ function displayEditModal(bookElement) {
     book.author = document.querySelector("#editBookModal #editAuthor").value;
     book.pages = document.querySelector("#editBookModal #editPages").value;
     book.read = document.querySelector("#editBookModal #editRead").value;
+    saveBooks();
+    displayBooks();
+    closeModal(modal);
+  });
+
+  let deleteButton = document.querySelector(
+    "#editBookModal button.submit-button"
+  );
+
+  deleteButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    let uuid = book.id;
+
+    books = books.filter((book) => book.id !== uuid);
+    saveBooks();
     displayBooks();
     closeModal(modal);
   });
 }
 
+function saveBooks() {
+  localStorage.setItem("books", JSON.stringify(books));
+}
+
 /*
-Update the books, so that they can display the progress of read pages
-TODO: pending removal due to serialization
+Init
 */
 document.addEventListener("DOMContentLoaded", function () {
-  document.querySelectorAll(".book").forEach((book) => {
-    updateProgress(book);
-    book.addEventListener("click", () => {
-      displayEditModal(book);
-    });
-  });
+  // Load books from localStorage
+  const savedBooks = localStorage.getItem("books");
+  if (savedBooks) {
+    books = JSON.parse(savedBooks).map(
+      (bookData) =>
+        new Book(bookData.title, bookData.author, bookData.pages, bookData.read)
+    );
+  }
+
+  // Update the UI with loaded books
+  displayBooks();
 });
 
 /*
@@ -188,6 +208,7 @@ submitButton.addEventListener("click", (e) => {
   }
 
   books.push(new Book(title, author, pages, read));
+  saveBooks();
   displayBooks();
   closeModal(modal);
 });
