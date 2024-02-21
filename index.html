@@ -54,6 +54,8 @@
         <button class="material-symbols-outlined">add</button>
       </article>
 
+      <!-- Modals -->
+
       <div id="addBookModal" class="modal">
         <div class="modal-content">
           <span class="close-button">&times;</span>
@@ -69,13 +71,47 @@
             </div>
             <div class="form-group">
               <label for="pages">Pages:</label>
-              <input type="number" id="pages" name="pages" required />
+              <input type="number" id="pages" name="pages" min="0" required />
             </div>
-            <div class="form-group check">
-              <label for="read">Completed:</label>
-              <input type="checkbox" id="read" name="read" />
+            <div class="form-group">
+              <label for="read">Read:</label>
+              <input
+                type="number"
+                id="read"
+                name="read"
+                required
+                value="0"
+                min="0"
+              />
             </div>
-            <input id="submit-button" type="submit" value="Add Book" />
+            <input class="submit-button" type="submit" value="Add Book" />
+          </form>
+        </div>
+      </div>
+
+      <!-- Edit Book Modal -->
+      <div id="editBookModal" class="modal">
+        <div class="modal-content">
+          <span class="close-button">&times;</span>
+          <h2>Edit Book</h2>
+          <form id="editBookForm">
+            <div class="form-group">
+              <label for="editTitle">Title:</label>
+              <input type="text" id="editTitle" name="title" required />
+            </div>
+            <div class="form-group">
+              <label for="editAuthor">Author:</label>
+              <input type="text" id="editAuthor" name="author" required />
+            </div>
+            <div class="form-group">
+              <label for="editPages">Pages:</label>
+              <input type="number" id="editPages" name="pages" required />
+            </div>
+            <div class="form-group">
+              <label for="editRead">Read:</label>
+              <input type="number" id="editRead" name="read" required />
+            </div>
+            <input class="submit-button" type="submit" value="Save Changes" />
           </form>
         </div>
       </div>
