@@ -37,6 +37,13 @@ class Book {
     readSpan.className = "pages-read";
     bookElement.appendChild(readSpan);
 
+    const progress = document.createElement("progress");
+    progress.id = "page-progress";
+    progress.min = "0";
+    progress.max = "100";
+    progress.value = this.pages == 0 ? 0 : (100 * this.read) / this.pages;
+    bookElement.appendChild(progress);
+
     bookElement.addEventListener("click", () => {
       displayEditModal(bookElement);
     });
