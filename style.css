@@ -1,17 +1,22 @@
+:root {
+  --gradient: linear-gradient(
+    34deg,
+    rgba(37, 99, 171, 0.18) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(37, 99, 171, 0.18) 100%
+  );
+  --light-blue: rgba(37, 99, 171, 0.18);
+}
+
 body {
-  font-family: "Poppins", "Arial", sans-serif;
+  font-family: "Work Sans", "Arial", sans-serif;
   font-weight: 400;
   display: grid;
   height: 100vh;
   grid-template-rows: 125px auto 60px;
   margin: 0;
   background: rgb(37, 99, 171);
-  background: linear-gradient(
-    34deg,
-    rgba(37, 99, 171, 0.18) 0%,
-    rgba(255, 255, 255, 0.1) 50%,
-    rgba(37, 99, 171, 0.18) 100%
-  );
+  background: var(--gradient);
 }
 
 header {
@@ -30,6 +35,13 @@ header .logo {
 main {
   /* background-color: orange; */
   overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 20rem);
+  gap: 10rem;
+  margin: 5rem;
+  padding: 5rem;
+  justify-items: center;
+  /* align-items: center; */
 }
 
 footer {
@@ -53,4 +65,147 @@ footer > a {
 footer > a:hover {
   cursor: pointer;
   transform: scale(1.2);
+}
+
+.book,
+#book-add {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border: 2px solid rgba(0, 0, 0, 0.16);
+  width: 20rem;
+  height: 16rem;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
+  /* padding: 2rem; */
+  border-radius: 10px;
+  font-size: 1.5rem;
+  box-shadow: 2px 1px rgba(0, 0, 0, 0.16);
+  transition: all 0.2s ease-in-out;
+  background: white;
+}
+#book-add:hover,
+.book:hover {
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+.book span:first-child {
+  /* Title */
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.book span:nth-child(2) {
+  /* Author */
+  color: #555; /* Slightly darker font color */
+}
+
+/* Progress bar*/
+.book::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: min(var(--read-percentage, 0), 100%);
+  width: 0.6rem;
+  background-color: rgba(68, 130, 201, 0.58);
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+#book-add button {
+  width: 100%;
+  height: 100%;
+  background-color: red;
+  font-size: 12rem;
+  background-color: inherit;
+  border: none;
+  cursor: pointer;
+  color: silver;
+}
+
+/* The Modal (background) */
+.modal {
+  display: inline-block; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 3rem;
+  border: 1px solid #888;
+  width: min(30rem, 30%);
+  font-size: 1.5rem;
+}
+
+.modal .close-button {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+#submit-button {
+  display: inline-block;
+  font-size: 1.5rem;
+  background-color: inherit;
+  border: 1px solid rgba(0, 0, 0, 0.36);
+  border-radius: 3px;
+  padding: 10px;
+  margin-top: 2rem;
+}
+
+.modal input {
+  font-size: 1.5rem;
+  padding: 10px;
+}
+
+.modal .check {
+  height: 4rem;
+}
+
+.modal .check input {
+  height: 2rem;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.form-group label {
+  flex-basis: 20%;
+  min-width: 80px;
+  margin-right: 10px;
+}
+
+.form-group input {
+  flex-grow: 1;
+}
+
+#submit-button:hover,
+#submit-button:focus {
+  background-color: rgba(0, 0, 0, 0.025);
+  text-decoration: none;
+  cursor: pointer;
+}
+.close-button:hover,
+.close-button:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
